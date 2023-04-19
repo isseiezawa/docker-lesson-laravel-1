@@ -1,0 +1,25 @@
+version: "3"
+services:
+  db:
+    image: mariadb:10.4
+    container_name: "laravel-db"
+    volumes:
+      - ./data:/var/lib/mysql
+      - ./db/my.cnf:/etc/mysql/conf.d/my.cnf
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: docker
+      TZ: 'Asia/Tokyo'
+    ports:
+      - "3306:3306"
+  php:
+    build: ./php
+    container_name: "laravel-php"
+    volumes:
+      - ./source:/var/www/html
+      - ./php/vhost.conf:/etc/apache2/conf-enabled/chost.conf
+      # ↑設定ファイルが変わる可能性があるからdocker-composeで設定
+    ports:
+      - "8080:80"
